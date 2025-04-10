@@ -1,0 +1,37 @@
+
+---
+
+## 🐍 `main.py`
+
+```python
+import mysql.connector
+
+# my credentials here
+conn = mysql.connector.connect(
+    host='localhost',
+    user='my_user',
+    password='my_password',
+    database='mylittle_lemon'
+)
+
+cursor = conn.cursor()
+
+# Run stored procedures
+print("Most ordered item:")
+cursor.callproc('GetMaxQuantity')
+
+for result in cursor.stored_results():
+    print(result.fetchall())
+
+# Sample: Adding a new booking
+cursor.callproc('AddBooking', [
+    1,               # CustomerID
+    '2025-04-15',    # BookingDate
+    '18:30:00',      # BookingTime
+    2,               # NumberOfGuests
+    'Confirmed'      # BookingStatus
+])
+
+conn.commit()
+cursor.close()
+conn.close()
